@@ -13,10 +13,11 @@ function Sonicmove(){
 	key_x = keyboard_check_pressed(ord("X"));
 	
 	//direction action = 0
-	//movement action = 1
-	//jump action = 2
+	//jump action = 1
+	//movement action = 2
 	//dash pad action = 3
 	//dash ring action = 4
+	//grinding action = 5
 	//rolling action = -1
 	//spin dash action = -2
 	//look up action = -3
@@ -24,6 +25,8 @@ function Sonicmove(){
 	//homing attack action = -5
 	//stomp action = -6
 	//light speed dash action = -7
+	
+	currhsp = 0
 	
 	//direction
 	if action = 0
@@ -68,15 +71,41 @@ function Sonicmove(){
 		}
 	}
 	///jump
-	if key_a && ground && (action = 0 || action = 2)
+	if key_a && ground && (action = 0 || action = 2 || action = -1)
 	{
 		ground = 0;
-		vsp = acos*jmp;
-		hsp = asin*jmp;
+		vsp = acos*jmp + (-asin*hsp)/1.5;
+		hsp = hsp*acos + asin*jmp;
 		angle = acos*hsp;
 		acos = 1;
 		asin = 0;
 		action=1;
+	}
+	if action == 1 && !ground{
+		if key_r{
+            if hsp >=0 {
+                if hsp< currhsp 
+                    hsp+=acc/2
+            } 
+            else 
+                hsp+=dcc/2;
+		}
+		if key_l{
+            if hsp<=0{
+                if hsp > -currhsp 
+                    hsp-=acc/2
+            }         
+            else 
+                hsp-=dcc/2;
+        }
+        if !key_r && !key_l{
+            if hsp > 0 
+                hsp -= frc; 
+            if hsp < 0 
+                hsp += frc;
+            if hsp <= frc && hsp >= -frc 
+                hsp = 0;
+        }
 	}
 	
 	//small jump
@@ -109,27 +138,27 @@ function Sonicmove(){
 	//looking up
 	if key_u && ground && action = 0
 	{
-		if abs(hsp) < 0.2 {hsp = 0; action = -3};
+		if abs(hsp) < 0.2 {hsp = 0; action = -3; image_i =0};
 	}
-	if (!key_u||!ground||key_r||key_l) && action = -3 action = 0;
+	if (!key_u||!ground||key_r||key_l) && (action = -3 && image_i>=4) action = 0;
 	
 	///spin dash
 	if sp > 0 {sp = sp-((sp div 1)/265)}
-	if sp > 64 sp = 64;
-	if action = -2 && key_a {sp+=24;}
+	if sp > 192 sp = 192;
+	if action = -2 && key_a {sp+=8;}
 	if action = -2 && !key_d {hsp = xdir*16+(xdir*floor(sp)/16);action = 2; sp = 0;}
-	if action = -1 && key_a {sp=0;action=-2;}
+	if action = -1 && key_a {sp=0;action=-2;image_i=0}
 	
 	///boost
 	
-	if key_b && (action = 0 || action = -4) && ground && boostamount > 0 {
+	if key_b && (action = 0 || action = 5) && ground && boostamount > 0 {
 		if xdir = 1
 		{hsp=32;}
 		if xdir = -1
 		{hsp=-32;}
 		boosting = true;
 	}
-	if key_b && (action = 1 || action = -4) && !ground && boostamount > 0 {
+	if key_b && (action = 1 || action = 5) && !ground && boostamount > 0 {
 		if xdir = 1
 		{hsp=32;}
 		if xdir = -1
@@ -241,5 +270,29 @@ function Sonicmove(){
 		if ground
 			action = 0
 	}
+	
+	//rail grinding
+	if vsp >= 0
+		canGrind = true;
+	else
+		canGrind = false;
 
+	if canGrind && ground && collision_line(x,y,x+20*asin,y+20*acos,objrail,true,true){
+		if action == 2
+			action = 0;
+		action = 5
+	}
+	if action == 5{
+		if hsp > 0
+			xdir = 1;
+		else if hsp < 0
+			xdir = -1;
+		if abs(hsp) < hspm
+			hsp += acc*xdir;
+		if key_b
+			hsp = hspl*xdir;
+		hsp += -asin*(dcc/6);
+		if !ground || !collision_line(x,y,x+20*asin,y+20*acos,objrail,true,true)
+			action = 0;
+	}
 }

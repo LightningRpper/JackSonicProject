@@ -6,5 +6,6 @@ function collision_script_main(){
 	if xlayer = 0 && collision_circle(x,y,mask,obwall,true,true) return true;
 	if xlayer = 1 && collision_circle(x,y,mask,ofwall,true,true) return true;
 	if collision_circle(x,y,mask,objstompable,true,true) return true;
+	if canGrind && collision_circle(x,y,mask,objrail,true,true) return true;
 	return false;
 }

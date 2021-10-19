@@ -94,3 +94,16 @@ if action = 3{
 	sprp = Sonicsprint;
 	frame += 1/max(2-(abs(hsp)),1);
 }
+
+//grinding
+if action = 5 && collision_line(x,y,x+25*asin,y+25*acos,objrail,true,true) && ground{
+	if abs(hsp) < 8.5
+        sprp = Sonicgrinding
+    else
+        sprp = Sonicgrindingfast
+	if key_b && xdir = 1
+		draw_sprite_ext(Boost,0,x,y,1,1,angle,c_white,1)
+	if key_b && xdir = -1
+		draw_sprite_ext(Boost,0,x,y,-1,1,angle,c_white,1)
+    frame += 0.5;
+}

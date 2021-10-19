@@ -8,5 +8,6 @@ function collision_script_left_line(){
 	if xlayer = 0 && collision_line(x-(acos*mask) + (asin*mask), y+(asin*mask)+(acos*mask), x-(acos*mask)+(asin*line),y+(asin*mask)+(acos*line),obwall,true,true) return true;
 	if xlayer = 1 && collision_line(x-(acos*mask) + (asin*mask), y+(asin*mask)+(acos*mask), x-(acos*mask)+(asin*line),y+(asin*mask)+(acos*line),ofwall,true,true) return true;
 	if collision_line(x-(acos*mask) + (asin*mask), y+(asin*mask)+(acos*mask), x-(asin*mask)+(acos*mask),y+(asin*mask)+(acos*line),objstompable,true,true) return true;
+	if canGrind && collision_line(x-(acos*mask)+(asin*mask),y+(asin*mask)+(acos*mask),x-(acos*mask)+(asin*line),y+(asin*mask)+(acos*line),objrail,true,true) return true;
 	return false;
 }
