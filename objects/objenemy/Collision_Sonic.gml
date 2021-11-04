@@ -6,7 +6,7 @@ if Sonic.sprp == Sonicroll or Sonic.sprp == Sonicspindash or Sonic.sprp == Sonic
 	
 	if Sonic.action == -5{
 		
-		Sonic.image_i = 0;
+		other.image_i = 2;
 		canHit = false;
 		hspeed = Sonic.xdir*Sonic.hspeed*cos(degtorad(point_direction(Sonic.x,Sonic.y,x,y)))*0.5;
 		vspeed = Sonic.vspeed*sin(-degtorad(point_direction(Sonic.x,Sonic.y,x,y)))*0.5;
@@ -25,23 +25,23 @@ if Sonic.sprp == Sonicroll or Sonic.sprp == Sonicspindash or Sonic.sprp == Sonic
 		}
 	}
 }
-else if action = -5{
-	if canHit{
-		canHit = false;
-		y -= 10;
-		//if abs(Sonic.hsp) >= 4
-		//	shake_camera(15)
-		if Sonic.ground{
-			hspeed = other.hsp;
-			vspeed = -2.5
-		}
-		else{
-            hspeed = other.hsp*cos(degtorad(point_direction(Sonic.x,Sonic.y,x,y-3)))*1.5;
-            vspeed = -other.vsp*sin(degtorad(point_direction(Sonic.x,Sonic.y,x,y-3)))*1.5;
-		}
-		alarm[0] = 30;
-	}
-}
+//else if action = -5{
+//	if canHit{
+//		canHit = false;
+//		y -= 10;
+//		//if abs(Sonic.hsp) >= 4
+//		//	shake_camera(15)
+//		if Sonic.ground{
+//			hspeed = other.hsp;
+//			vspeed = -2.5
+//		}
+//		else{
+//          hspeed = other.hsp*cos(degtorad(point_direction(Sonic.x,Sonic.y,x,y-3)))*1.5;
+//            vspeed = -other.vsp*sin(degtorad(point_direction(Sonic.x,Sonic.y,x,y-3)))*1.5;
+//		}
+//		alarm[0] = 30;
+//	}
+//}
 else if Sonic.action == 2{
 	instance_destroy();
 }

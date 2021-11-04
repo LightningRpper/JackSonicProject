@@ -33,7 +33,7 @@
   "overriddenProperties": [],
   "parent": {
     "name": "owall children",
-    "path": "folders/Objects/owall children.yy",
+    "path": "folders/Objects/Level assets/owall children.yy",
   },
   "resourceVersion": "1.0",
   "name": "ohalfpipe",

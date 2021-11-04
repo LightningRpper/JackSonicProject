@@ -48,6 +48,20 @@ if alarm1 > 0 {
 		action = 0
 }
 
+
+if alarm2 > 0
+{
+    alarm2 -= 1
+    if alarm2 == 1
+    {
+        action = 0
+		hsp = 0
+        vsp = 0
+        grv = 0.21875;
+    }
+}
+
+
 if hitInvincible > 0 
 {
     hitInvincible -= 1

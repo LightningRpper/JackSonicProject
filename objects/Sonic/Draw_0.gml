@@ -63,7 +63,7 @@ if action =-2
 }
 
 //homing attack
-if action == -5
+if action == -5 || action = 0 && !ground && key_a && instance_exists(objhominglock)
 {
 	frame += 1;
 	sprp = Sonicroll;
@@ -106,4 +106,47 @@ if action = 5 && collision_line(x,y,x+25*asin,y+25*acos,objrail,true,true) && gr
 	if key_b && xdir = -1
 		draw_sprite_ext(Boost,0,x,y,-1,1,angle,c_white,1)
     frame += 0.5;
+}
+
+//skidding
+if action = 6{
+	if abs(hsp) > 3
+		sprp = Sonicskidding
+		frame += 0.35
+}
+
+//spring
+if action = 4.5{ 
+	if image_angle = 45 || image_angle == 135 {
+		image_i = 0
+		sprp = Soniclightspeeddash
+	}
+	else if (image_angle > 0 && image_angle > 45) || (image_angle > 180 && image_angle > 135){
+		sprp = Soniclightspeeddash
+	}
+	else{
+		sprp = Sonicup
+	}
+}
+
+//dash ramp
+if action = 7{
+	if vsp > 2{
+		sprp = Soniclightspeeddash
+		frame += 0.25
+	}
+	else
+	{
+		sprp = Sonicfreefall
+	}
+}
+
+//swinging
+if action = 8{
+	sprp = Sonic360spin
+    frame += 0.35
+}
+if action == 9{
+    sprp = Sonicroll
+    frame += 1;
 }

@@ -6,7 +6,7 @@ vsp=0;
 hspl=28;
 vspl=20;
 hspm = 24;
-vspm = 16;
+vspm = 5;
 
 jmp = -8.5;
 sjmp = -4;

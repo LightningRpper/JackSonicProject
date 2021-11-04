@@ -5,8 +5,9 @@ if activate{
 	if image_angle == 0 || image_angle == 180{
 		other.grv = 0;
 		other.alarm0 = alarm_amount;
-		other.action = 4
+		other.action = 4.5
 	}
+	other.action = 4
 	other.ground = false;
 	other.image_i = 0;
 	other.x = x

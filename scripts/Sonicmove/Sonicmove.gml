@@ -16,13 +16,17 @@ function Sonicmove(){
 	//jump action = 1
 	//movement action = 2
 	//dash pad action = 3
-	//dash ring action = 4
+	//dash ring action = 4, spring action = 4.5
 	//grinding action = 5
+	//skidding action = 6
+	//dash ramp action = 7
+	//swing bar action = 8
+	//swing end action = 9
 	//rolling action = -1
 	//spin dash action = -2
 	//look up action = -3
 	//boost action = -4
-	//homing attack action = -5
+	//homing attack action = -5, -5.5
 	//stomp action = -6
 	//light speed dash action = -7
 	
@@ -71,7 +75,7 @@ function Sonicmove(){
 		}
 	}
 	///jump
-	if key_a && ground && (action = 0 || action = 2 || action = -1)
+	if key_a && ground && (action = 0 || action = 2 || action = -1 || action = 5)
 	{
 		ground = 0;
 		vsp = acos*jmp + (-asin*hsp)/1.5;
@@ -157,6 +161,7 @@ function Sonicmove(){
 		if xdir = -1
 		{hsp=-32;}
 		boosting = true;
+
 	}
 	if key_b && (action = 1 || action = 5) && !ground && boostamount > 0 {
 		if xdir = 1
@@ -170,47 +175,48 @@ function Sonicmove(){
 	}
 
 	//homing attack
-	if action == 1 || (action == 0 && !ground) || action == 2{
+	if (action == 1 || (action == 0 && !ground)){
 		canHome = true;
 	}
 	else {
 		canHome = false;
 	}
-	if canHome && distance_to_object(instance_nearest(x,y,objhomingtarget)) <= 200 && instance_nearest(x,y,objhomingtarget).y > (y-10) && !collision_line(x,y,instance_nearest(x,y,objhomingtarget).x,instance_nearest(x,y,objhomingtarget).y,owall,true,true) && instance_nearest(x,y,objhomingtarget).canHit && ((x<instance_nearest(x,y,objhomingtarget).x && xdir == 1) || (x>instance_nearest(x,y,objhomingtarget).x && xdir == -1)){
+	if canHome && distance_to_object(instance_nearest(x,y,objhomingtarget)) <= 250 && instance_nearest(x,y,objhomingtarget).y > (y-10) && !collision_line(x,y,instance_nearest(x,y,objhomingtarget).x,instance_nearest(x,y,objhomingtarget).y,owall,true,true) && instance_nearest(x,y,objhomingtarget).canHit && ((x<instance_nearest(x,y,objhomingtarget).x && xdir == 1) || (x>instance_nearest(x,y,objhomingtarget).x && xdir == -1)){
 		if !instance_exists(objhominglock)
 			instance_create_depth(instance_nearest(x,y,objhomingtarget).x,instance_nearest(x,y,objhomingtarget).y,0,objhominglock)
 	}
-	else if distance_to_object(instance_nearest(x,y,objhomingtarget)) > 200 || ground ||  instance_nearest(x,y,objhomingtarget).y <= (y-10) || (x<instance_nearest(x,y,objhomingtarget).x && xdir == 1) || (x>instance_nearest(x,y,objhomingtarget).x && xdir == 1){
+	else if distance_to_object(instance_nearest(x,y,objhomingtarget)) > 250 || ground ||  instance_nearest(x,y,objhomingtarget).y <= (y-10) || (x<instance_nearest(x,y,objhomingtarget).x && xdir == -1) || (x>instance_nearest(x,y,objhomingtarget).x && xdir == 1){
 		if instance_exists(objhominglock)
 			with(objhominglock){
 				instance_destroy();
 			}	
 	}
-	if ((action = 1 || action = 2) && djmp && key_ar || (action == 0 && !ground)){
+	if (action = 1 && djmp && key_ar) || (action == 0 && !ground) || action == 4{
 		djmp = false
+	}
 				
 	if instance_exists(objhominglock){
-		if key_a && !djmp{
-			hsp = 0;
-			vsp = 0;
-			key_b = false;
-			key_v = false;
-			key_a = false;
-			key_x = false;
+		if key_a && !djmp {
 			action = -5;
-			move_towards_point(objhominglock.x,objhominglock.y,20)
+			vsp = 0;
+			hsp = xdir*6;
+			move_towards_point(objhominglock.x,objhominglock.y,130)
 		}
 	}
+	if !djmp && ground
+		djmp = true
 	
 	if action = -5 && instance_exists(objhominglock){
-		move_towards_point(objhominglock.x,objhominglock.y,20)
+		move_towards_point(objhominglock.x,objhominglock.y,130)
 	}
 	else{
 		vspeed = 0
 		hspeed = 0
 	}
-	if action == -5 && (place_meeting(x,y,owall) || ground) 
-		action = 0
+	if action == -5 && (place_meeting(x,y,owall) || ground || place_meeting(x,y,objenemy)){ 
+		action = 0;
+		hsp = 0;
+		vsp = vspm;
 	}
 	
 	///stomp
@@ -261,8 +267,8 @@ function Sonicmove(){
 			hsp = -hspl
 	}
 	
-	//dash ring
-	if action = 4{
+	//reacting to spring and dash ring
+	if (action = 4 || action = 4.5){
 		if hsp > 0
 			xdir = 1;
 		else if hsp < 0
@@ -294,5 +300,57 @@ function Sonicmove(){
 		hsp += -asin*(dcc/6);
 		if !ground || !collision_line(x,y,x+20*asin,y+20*acos,objrail,true,true)
 			action = 0;
+	}
+	
+	//skidding
+	if action == 0 && ground{
+		if (xdir == 1 && key_l && hsp >= 5) || (xdir == -1 && key_r && hsp <= -5){
+		action = 6;
+		image_i = 0;
+		}
+	}
+	if action = 6{
+		if hsp > 1
+			hsp -= dcc/4
+		if hsp < -1
+			hsp += dcc/4
+		if hsp > 1 && key_l
+			hsp -= dcc/3
+		if hsp < -1 && key_r
+			hsp += dcc/3
+		if (xdir == 1 && key_r && !key_l) || (xdir == -1 && key_l && !key_r)
+			action = 0
+		if abs(hsp) <= 1 || !ground{
+			action = 0
+			xdir = -xdir
+		}
+	}
+	//dash ramp
+	if action = 7{
+		hsp = 12*xdir
+		if ground
+			action = 0
+	}
+	
+	//swingbar
+	if action = 8{
+		x = instance_nearest(x,y,oswingbar).x
+		y = instance_nearest(x,y,oswingbar).y
+		hsp = 0
+		vsp = 0
+    
+		if key_a && (image_i % 15 >= 0 && image_i % 15 < 5)   {
+			action = 9
+			vsp = -8
+			hsp = xdir*10
+		}
+		else if key_a{
+			action = 0
+			y += 10
+		}
+	}
+	if action == 9{
+		if vsp >= 2 || ground
+			action = 0
 	}
 }

@@ -28,7 +28,7 @@
   "overriddenProperties": [],
   "parent": {
     "name": "objrail children",
-    "path": "folders/Objects/objrail children.yy",
+    "path": "folders/Objects/Level assets/objrail children.yy",
   },
   "resourceVersion": "1.0",
   "name": "railmidpoint",
